@@ -4,7 +4,7 @@ plugins {
 
 }
 architectury {
-    common("forge", "fabric")
+    common("fabric")
     platformSetupLoomIde()
 }
 
@@ -34,8 +34,8 @@ dependencies {
     api("org.mongodb:mongodb-driver-sync:${property("mongodb_version")}")
 
     // Lombok
-    annotationProcessor("org.projectlombok:lombok:1.18.20")
-    implementation("org.projectlombok:lombok:1.18.20")
+    annotationProcessor("org.projectlombok:lombok:1.18.36")
+    implementation("org.projectlombok:lombok:1.18.36")
 
     // Permissions
     api("net.luckperms:api:${property("luckperms_version")}")

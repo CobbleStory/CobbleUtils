@@ -33,6 +33,7 @@ allprojects {
         maven("https://maven.impactdev.net/repository/development")
         maven("https://repo.essentialsx.net/releases/")
         maven("https://maven.impactdev.net/repository/development/")
+        maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots")
         mavenLocal()
 
         maven("https://maven.nucleoid.xyz/") {

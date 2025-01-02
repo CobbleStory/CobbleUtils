@@ -1,12 +1,16 @@
 package com.kingpixel.cobbleutils.util;
 
+import com.cobblemon.mod.common.api.moves.Move;
+import com.cobblemon.mod.common.api.moves.adapters.MoveTemplateAdapter;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.api.types.ElementalType;
 import com.cobblemon.mod.common.api.types.adapters.ElementalTypeAdapter;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.adapters.IntRangeAdapter;
+import com.cobblemon.mod.common.util.adapters.NbtCompoundAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.internal.bind.DateTypeAdapter;
 import com.kingpixel.cobbleutils.CobbleUtils;
 import com.kingpixel.cobbleutils.Model.ItemModel;
@@ -49,11 +53,17 @@ import java.util.function.Consumer;
 public abstract class Utils {
   public static final Random RANDOM = new Random();
   private static final Charset charset = StandardCharsets.UTF_8;
+  private static Gson gsonPretty = null;
+  private static Gson gsonnotPretty = null;
+
 
   public static Gson newGson() {
-    return adapters()
-      .setPrettyPrinting()
-      .create();
+    if (gsonPretty == null) {
+      gsonPretty = adapters()
+        .setPrettyPrinting()
+        .create();
+    }
+    return gsonPretty;
   }
 
   private static GsonBuilder adapters() {
@@ -62,8 +72,11 @@ public abstract class Utils {
   }
 
   public static Gson newWithoutSpacingGson() {
-    return adapters()
-      .create();
+    if (gsonnotPretty == null) {
+      gsonnotPretty = adapters()
+        .create();
+    }
+    return gsonnotPretty;
   }
 
   private static GsonBuilder addAdapters(GsonBuilder builder) {
@@ -72,6 +85,9 @@ public abstract class Utils {
       .registerTypeAdapter(ShopTransactions.ShopAction.class, new ShopActionAdapter())
       .registerTypeAdapter(ElementalType.class, ElementalTypeAdapter.INSTANCE)
       .registerTypeAdapter(IntRange.class, IntRangeAdapter.INSTANCE)
+      .registerTypeAdapter(NbtCompound.class, NbtCompoundAdapter.INSTANCE)
+      .registerTypeAdapter(Move.class, MoveTemplateAdapter.INSTANCE)
+      .registerTypeAdapter(NbtCompoundAdapter.class, NbtCompoundAdapter.INSTANCE)
       .registerTypeAdapter(DateTypeAdapter.class, new DateTypeAdapter());
   }
 
@@ -127,8 +143,7 @@ public abstract class Utils {
     }
   }
 
-  public static CompletableFuture<Boolean> readFileAsync(String filePath, String filename,
-                                                         Consumer<String> callback) {
+  public static CompletableFuture<Boolean> readFileAsync(String filePath, String filename, Consumer<String> callback) {
     CompletableFuture<Boolean> future = new CompletableFuture<>();
     ExecutorService executor = Executors.newSingleThreadExecutor();
 
@@ -157,6 +172,10 @@ public abstract class Utils {
       fileChannel.close();
       executor.shutdown();
       future.complete(true);
+    } catch (JsonSyntaxException e) {
+      CobbleUtils.LOGGER.error("Malformed JSON in file " + file.getAbsolutePath() + " - " + e.getMessage());
+      future.complete(false);
+      executor.shutdown();
     } catch (Exception e) {
       future.complete(readFileSync(file, callback));
       executor.shutdown();
@@ -173,9 +192,11 @@ public abstract class Utils {
       }
       callback.accept(data.toString());
       return true;
+    } catch (JsonSyntaxException e) {
+      CobbleUtils.LOGGER.error("Malformed JSON in file " + file.getAbsolutePath() + " - " + e.getMessage());
+      return false;
     } catch (IOException e) {
-      CobbleUtils.LOGGER
-        .fatal("Unable to read file " + file.getName() + " for " + CobbleUtils.MOD_ID + "." + e.getMessage());
+      CobbleUtils.LOGGER.fatal("Unable to read file " + file.getAbsolutePath() + " - " + e.getMessage());
       return false;
     }
   }

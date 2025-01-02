@@ -17,6 +17,7 @@ pluginManagement {
         maven("https://maven.impactdev.net/raepository/development")
         maven("https://repo.essentialsx.net/releases/")
         maven("https://maven.impactdev.net/repository/development/")
+        maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots")
         gradlePluginPortal()
         mavenLocal()
         maven("https://maven.nucleoid.xyz/") {
@@ -30,4 +31,4 @@ pluginManagement {
         }
     }
 }
-include("common", "fabric", "forge")
+include("common", "fabric")
