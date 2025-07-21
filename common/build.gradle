@@ -39,6 +39,10 @@ dependencies {
     api(fileTree(dir: "libs", include: ["*.jar"], exclude: ["*sdm-economy*"]))
     implementation("net.impactdev.impactor.api:economy:${property("impactor_version")}")
     modImplementation(files("libs/sdmeconomy-fabric-1.21.1-2.0.0.jar"))
+
+    modImplementation("gg.levely.cobblestory:economy-api:2.0.0")
+    api("gg.levely.cobblestory:economy-api:2.0.0")
+
     api("org.spigotmc:spigot-api:${property("spigot_version")}")
     api("com.github.MilkBowl:VaultAPI:${property("vault_api_version")}")
 

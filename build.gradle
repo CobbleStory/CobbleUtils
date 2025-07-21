@@ -77,6 +77,13 @@ allprojects {
             url "https://s01.oss.sonatype.org/content/repositories/snapshots"
             name = "Sonatype 01 Snapshots"
         }
+        maven {
+            url = uri("https://maven.pkg.github.com/CobbleStory/CobbleEconomyAPI")
+            credentials {
+                username = project.findProperty("gpr.user").toString()
+                password = project.findProperty("gpr.token").toString()
+            }
+        }
     }
 
     tasks.withType(JavaCompile).configureEach {

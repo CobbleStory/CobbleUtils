@@ -25,6 +25,7 @@ public class EconomyApi {
     economys.add(new PebbleEconomy());
     economys.add(new SDMEconomy());
     economys.add(new VaultEconomy());
+    economys.add(new CobbleEconomy());
 
     economys.removeIf(economy -> {
       try {
